@@ -1,3 +1,7 @@
+use std::str::FromStr;
+
+use thiserror::Error;
+
 pub enum MatchResult {
     Win,
     Lose,
@@ -14,13 +18,21 @@ impl MatchResult {
     }
 }
 
-impl From<&str> for MatchResult {
-    fn from(string: &str) -> Self {
-        match string {
-            "X" => MatchResult::Lose,
-            "Y" => MatchResult::Draw,
-            "Z" => MatchResult::Win,
-            _ => panic!("Invalid input"),
+impl FromStr for MatchResult {
+    type Err = MatchResultError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "X" => Ok(MatchResult::Lose),
+            "Y" => Ok(MatchResult::Draw),
+            "Z" => Ok(MatchResult::Win),
+            _ => Err(MatchResultError::InvalidInput(s.to_string())),
         }
     }
+}
+
+#[derive(Error, Debug)]
+pub enum MatchResultError {
+    #[error("Invalid input: {0}")]
+    InvalidInput(String),
 }

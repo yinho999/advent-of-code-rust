@@ -1,4 +1,9 @@
-use crate::{match_result::MatchResult, player_option::PlayerOption};
+use std::str::FromStr;
+
+use crate::{
+    match_result::MatchResult,
+    player_option::{PlayerOption, PlayerOptionError},
+};
 
 pub struct Game<T> {
     input_1: PlayerOption,
@@ -6,11 +11,11 @@ pub struct Game<T> {
 }
 
 impl<T> Game<T> {
-    pub fn new(input_1: String, input_2: T) -> Self {
-        Game {
-            input_1: PlayerOption::from(input_1.as_str()),
+    pub fn new(input_1: String, input_2: T) -> Result<Self, PlayerOptionError> {
+        Ok(Game {
+            input_1: PlayerOption::from_str(input_1.as_str())?,
             input_2,
-        }
+        })
     }
 }
 impl Game<PlayerOption> {
